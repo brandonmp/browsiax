@@ -32,6 +32,7 @@
         "react/jsx-indent-props": "off",
         "react/jsx-wrap-multilines": "off",
         "no-confusing-arrow": "off",
+        "flowtype/space-after-type-colon": "off",
         "react/sort-comp": [
             "error",
             {

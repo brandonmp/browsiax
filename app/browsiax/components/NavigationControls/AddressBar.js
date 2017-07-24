@@ -27,9 +27,16 @@ class AddressBar extends React.Component {
     restoreValue() {
         this.setValue(this.props.displayUrl);
     }
-
+    componentDidMount() {
+        this.setValue(this.props.displayUrl);
+    }
     componentWillReceiveProps(nextProps) {
-        if (nextProps.displayUrl && nextProps.displayUrl !== this.getValue()) {
+        if (
+            // only update input if the url has changed from last time. this prevents
+            //  overwrites from re-renders while user is inputting
+            nextProps.displayUrl &&
+            nextProps.displayUrl !== this.props.displayUrl
+        ) {
             this.setValue(nextProps.displayUrl);
         }
     }
@@ -57,9 +64,6 @@ class AddressBar extends React.Component {
                 break;
         }
     };
-    componentDidMount() {
-        this.setValue(this.props.displayUrl);
-    }
 
     render() {
         return (

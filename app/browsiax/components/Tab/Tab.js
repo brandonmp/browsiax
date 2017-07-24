@@ -1,12 +1,15 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
-import CloseButton, { CloseIcon } from './CloseButton.js';
 import { withHandlers } from 'recompose';
+import { GridLoader } from 'react-spinners';
+
+import CloseButton, { CloseIcon } from './CloseButton.js';
 
 type Props = {
     title: string,
     tabId: string,
+    isLoading: boolean,
     isActive: boolean,
     onTabClick: (tabId: string) => void,
     onTabCloseClick: (tabId: string) => void,
@@ -42,10 +45,28 @@ const TabWrapper = styled.div`
         opacity: 1;
     }
 `;
+const FaviconWrapper = styled.div`min-width: 15px;`;
+const Label = styled.div`
+    margin-right: 10px;
+    margin-left: 5px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+`;
 
-const Label = styled.div`margin-right: 10px;`;
+const FaviconImage = styled.img`vertical-align: sub;`;
 const Tab = (props: Props) =>
-    <TabWrapper onClick={props.handleClick} isActive={props.isActive}>
+    <TabWrapper
+        isLoading={props.isLoading}
+        onClick={props.handleClick}
+        isActive={props.isActive}
+    >
+        <FaviconWrapper>
+            {props.isLoading
+                ? <GridLoader size={3} margin={1} loading={props.isLoading} />
+                : typeof props.faviconUrl === 'string' &&
+                  <FaviconImage height={'15px'} src={props.faviconUrl} />}
+        </FaviconWrapper>
         <Label>
             {props.title}
         </Label>

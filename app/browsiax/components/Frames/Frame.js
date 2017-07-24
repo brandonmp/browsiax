@@ -6,6 +6,7 @@ import {
     updateWebContents,
     cleanupWebContents
 } from '../../utils/web-contents-cache.js';
+import addEventListeners from './add-event-listeners.js';
 
 type Props = {
     currentUrl: string,
@@ -34,6 +35,16 @@ type Props = {
     }
 };
 
+type DefaultProps = {
+    webviewOptions: {}
+};
+type State = {
+    // we can't just straight set the url by props b/c that forces it to reload the
+    // webview every time an action updates the tab URL in state. in the case of
+    // navigations that originate in the webview, this means a double-load
+    startingUrl: string
+};
+
 const Wrapper = styled.div`
     height: 100%;
     width: 100%;
@@ -41,25 +52,40 @@ const Wrapper = styled.div`
     // setting visibility hidden is a little diff't than i'd normally do, but this is how brave does it
     visibility: ${props => (props.isActive ? 'visible' : 'hidden')};
 `;
-class Frame extends React.Component {
-    props: Props;
+class Frame extends React.Component<DefaultProps, Props, State> {
+    state: State;
+    webview: HTMLElement;
+    static defaultProps = {
+        webviewOptions: {}
+    };
+    constructor(props: Props) {
+        super(props);
+        this.state = {
+            startingUrl: this.props.currentUrl
+        };
+        this.webview = null;
+    }
 
     componentWillUnmount() {
         cleanupWebContents(this.props.tabId);
     }
 
-    cacheWebContents = ({ target }) => {
-        console.log('CACHING', target.getWebContents());
+    handleDidAttach = ({ target }: Event) => {
+        this.cacheWebContents(target);
+        addEventListeners(target, this.props);
+    };
+
+    cacheWebContents = (webview: EventTarget | HTMLElement) => {
         // keep webcontents in cache so we don't have to continually re-fetch
         if (this.props.tabId)
-            updateWebContents(this.props.tabId, target.getWebContents());
+            updateWebContents(this.props.tabId, webview.getWebContents());
     };
 
     webview: ?HTMLElement = null;
     render() {
         return (
             <Wrapper isActive={this.props.isActive}>
-                {/*  webview doesn't seem to fill container w/o flex prop */}
+                {/*  webview doesn't seem to fill container w/o flex prop, so assign to actual webview element */}
                 <style>{`
                     .react-webview {
                         flex: 1;
@@ -68,22 +94,20 @@ class Frame extends React.Component {
                 <Webview
                     // hooks to undocumented event
                     // https://github.com/electron/electron/issues/10042
-                    onDidAttach={this.cacheWebContents}
+                    onDidAttach={this.handleDidAttach}
                     ref={e => (this.webview = e)}
-                    partition={`persist:${this.props.tabId}`}
-                    className={'react-webview'}
+                    partition={'persist:default'}
+                    className={`react-webview ${this.props.isActive
+                        ? 'active'
+                        : ''}`}
+                    webpreferences={'scrollBounce=true'} // don't want mac users thinking we're not hip!
                     style={{ width: '100%', height: '100%', display: 'flex' }}
-                    src={this.props.currentUrl}
+                    src={this.state.startingUrl}
                     {...this.props.webviewOptions}
                 />
             </Wrapper>
         );
     }
 }
-
-Frame.defaultProps = {
-    currentUrl: 'https://www.google.com',
-    webviewOptions: {}
-};
 
 export default Frame;

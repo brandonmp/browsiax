@@ -5,8 +5,12 @@ import styled from 'styled-components';
 import Frame from './Frame.js';
 
 type Props = {
-    tabs: Tab[]
+    tabs: Tab[],
+    startWebviewLoad: (tabId: number) => void,
+    finishWebviewLoad: (tabId: number) => void,
+    updateTab: (tabId: number) => void
 };
+
 const Wrapper = styled.div`
     height: 100%;
     width: 100%;
@@ -14,7 +18,16 @@ const Wrapper = styled.div`
 `;
 const Frames = (props: Props) =>
     <Wrapper>
-        {props.tabs.map(t => <Frame key={t.tabId} {...t} currentUrl={t.url} />)}
+        {props.tabs.map(t =>
+            <Frame
+                key={t.tabId}
+                {...t}
+                currentUrl={t.url}
+                startWebviewLoad={props.startWebviewLoad}
+                finishWebviewLoad={props.finishWebviewLoad}
+                updateTab={props.updateTab}
+            />
+        )}
     </Wrapper>;
 
 export default Frames;
