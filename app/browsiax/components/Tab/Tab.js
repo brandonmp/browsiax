@@ -25,6 +25,7 @@ const TabWrapper = styled.div`
     padding: 5px;
     display: flex;
     border-right: 1px solid #bbb;
+    border-top: 1px solid #bbb;
     flex-flow: row nowrap;
     justify-content: space-between;
     align-items: center;

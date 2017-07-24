@@ -31,8 +31,7 @@ const setActiveTab = (state, activeTabId) =>
 
 const closeTab = (state, targetTabId) => {
     // if closing tab is active, we have to pick a replacement
-    const targetTabIndex = state.findIndex((t, idx) => targetTabId === t.tabId);
-    console.log('TARGET TAB', state[targetTabIndex], targetTabIndex);
+    const targetTabIndex = state.findIndex(t => targetTabId === t.tabId);
     // set either the one right before the closing tab (or the one after it, if closing tab was the first tab) as active
     const tabsWithNewActive = state[targetTabIndex].isActive
         ? state.map(
@@ -43,7 +42,6 @@ const closeTab = (state, targetTabId) => {
                       : t
           )
         : state;
-    console.log('RETURNING STATE', state);
     return tabsWithNewActive.filter(t => t.tabId !== targetTabId);
 };
 

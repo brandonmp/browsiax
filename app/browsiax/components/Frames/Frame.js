@@ -2,13 +2,15 @@
 import React from 'react';
 import Webview from 'react-electron-web-view';
 import styled from 'styled-components';
+import {
+    updateWebContents,
+    cleanupWebContents
+} from '../../utils/web-contents-cache.js';
 
 type Props = {
     currentUrl: string,
     isActive: boolean,
-    frame: {
-        tabId: number
-    },
+    tabId: number,
     webviewOptions?: {
         autosize?: boolean,
         nodeintegration?: boolean,
@@ -39,29 +41,49 @@ const Wrapper = styled.div`
     // setting visibility hidden is a little diff't than i'd normally do, but this is how brave does it
     visibility: ${props => (props.isActive ? 'visible' : 'hidden')};
 `;
-const Frame = (props: Props) =>
-    <Wrapper isActive={props.isActive}>
-        {/*  webview doesn't seem to fill container w/o flex prop */}
-        <style>{`
-      .react-webview {
-          flex: 1;
-        }
-    `}</style>
-        <Webview
-            partition={`persist:${props.frame.tabId}`}
-            className={'react-webview'}
-            style={{ width: '100%', height: '100%', display: 'flex' }}
-            src={props.currentUrl}
-            {...props.webviewOptions}
-        />
-    </Wrapper>;
+class Frame extends React.Component {
+    props: Props;
+
+    componentWillUnmount() {
+        cleanupWebContents(this.props.tabId);
+    }
+
+    cacheWebContents = ({ target }) => {
+        console.log('CACHING', target.getWebContents());
+        // keep webcontents in cache so we don't have to continually re-fetch
+        if (this.props.tabId)
+            updateWebContents(this.props.tabId, target.getWebContents());
+    };
+
+    webview: ?HTMLElement = null;
+    render() {
+        return (
+            <Wrapper isActive={this.props.isActive}>
+                {/*  webview doesn't seem to fill container w/o flex prop */}
+                <style>{`
+                    .react-webview {
+                        flex: 1;
+                      }
+                  `}</style>
+                <Webview
+                    // hooks to undocumented event
+                    // https://github.com/electron/electron/issues/10042
+                    onDidAttach={this.cacheWebContents}
+                    ref={e => (this.webview = e)}
+                    partition={`persist:${this.props.tabId}`}
+                    className={'react-webview'}
+                    style={{ width: '100%', height: '100%', display: 'flex' }}
+                    src={this.props.currentUrl}
+                    {...this.props.webviewOptions}
+                />
+            </Wrapper>
+        );
+    }
+}
 
 Frame.defaultProps = {
     currentUrl: 'https://www.google.com',
-    webviewOptions: {},
-    frame: {
-        tabId: 0
-    }
+    webviewOptions: {}
 };
 
 export default Frame;

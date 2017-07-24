@@ -191,6 +191,8 @@
     "electron-debug": "^1.2.0",
     "font-awesome": "^4.7.0",
     "history": "^4.6.3",
+    "lru-cache": "^4.1.1",
+    "punycode": "^2.1.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-electron-web-view": "^2.0.1",
