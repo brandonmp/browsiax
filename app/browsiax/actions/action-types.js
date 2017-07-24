@@ -1,0 +1,7 @@
+// @flow
+
+export default {
+    NEW_TAB_REQUESTED: 'NEW_TAB_REQUESTED',
+    SET_ACTIVE_TAB: 'SET_ACTIVE_TAB',
+    CLOSE_TAB: 'CLOSE_TAB'
+};
