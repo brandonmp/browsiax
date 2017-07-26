@@ -3,6 +3,7 @@ import React from 'react';
 import Webview from 'react-electron-web-view';
 import _ from 'lodash';
 import styled from 'styled-components';
+import makeContextMenu from 'electron-context-menu';
 import {
     updateWebContents,
     cleanupWebContents
@@ -53,7 +54,7 @@ const Wrapper = styled.div`
     height: 100%;
     width: 100%;
     position: absolute;
-    // setting visibility hidden is a little diff't than i'd normally do, but this is how brave does it
+    // electron docs recommend setting size to 0px x 0px  but visibility is what brave does
     visibility: ${props => (props.isActive ? 'visible' : 'hidden')};
 `;
 class Frame extends React.Component<DefaultProps, Props, State> {
@@ -81,6 +82,7 @@ class Frame extends React.Component<DefaultProps, Props, State> {
         this.restoreTabHistory(target);
         this.cacheWebContents(target);
         addEventListeners(target, this.props);
+        makeContextMenu({ window: target });
     };
 
     restoreTabHistory = (webview: EventTarget | HTMLElement) => {

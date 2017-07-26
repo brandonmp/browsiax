@@ -2,6 +2,7 @@
 import type { Props } from './Frame.js';
 import { getWebContents } from '../../utils/web-contents-cache.js';
 import { getDefaultFaviconUrl } from '../../utils/url-util.js';
+import renderErrorPage from './render-error-page.js';
 
 const getFullTabState = (tabId: number) => {
     const wc = getWebContents(tabId);
@@ -36,6 +37,18 @@ const addEventListeners = (webview: HTMLElement, props: Props) => {
         finishWebviewLoad(tabId);
     });
 
+    webview.addEventListener(
+        'did-fail-load',
+        // $FlowFixMe
+        ({ errorCode, errorDescription }) => {
+            const wc = getWebContents(tabId);
+            const errorPageRenderer = renderErrorPage(
+                errorCode,
+                errorDescription
+            ).toString();
+            wc.executeJavaScript(errorPageRenderer);
+        }
+    );
     // favicons are so awkward to retrieve that electron has an event just for it
     webview.addEventListener('page-favicon-updated', e => {
         if (
