@@ -5,7 +5,6 @@ import tabsActions from '../actions/tabs';
 import TabsBar from '../components/TabsBar';
 
 function mapStateToProps(state) {
-    console.log('STATE CHANGE', state);
     return {
         tabs: state.tabs
     };

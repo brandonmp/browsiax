@@ -1,8 +1,8 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
-import { withProps } from 'recompose';
 import { isUrl } from '../../utils/app-url-util';
+import { withProps } from 'recompose';
 import { KEYCODES } from '../../utils/constants.js';
 
 type Props = {
@@ -11,6 +11,16 @@ type Props = {
 const FullWidthInput = styled.input`
     width: 100%;
     padding: 3px;
+    box-shadow: 0 0 0 0 rgba(19, 124, 189, 0), 0 0 0 0 rgba(19, 124, 189, 0),
+        inset 0 0 0 1px rgba(16, 22, 26, 0.15),
+        inset 0 1px 1px rgba(16, 22, 26, 0.2);
+    border: 0px;
+    border-radius: 3px;
+    height: 20px;
+    &: focus {
+        box-shadow: 0 0 0 1px #137cbd, 0 0 0 3px rgba(19, 124, 189, 0.3),
+            inset 0 1px 1px rgba(16, 22, 26, 0.2);
+    }
 `;
 
 class AddressBar extends React.Component {
@@ -77,11 +87,6 @@ class AddressBar extends React.Component {
     }
 }
 
-const _getActiveTabUrl = props => {
-    const activeTab = props.tabs.find(({ isActive }) => isActive) || {};
-    return {
-        activeTab,
-        displayUrl: activeTab.url
-    };
-};
-export default withProps(_getActiveTabUrl)(AddressBar);
+export default withProps(props => ({ displayUrl: props.activeTab.url }))(
+    AddressBar
+);

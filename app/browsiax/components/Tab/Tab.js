@@ -3,13 +3,15 @@ import React from 'react';
 import styled from 'styled-components';
 import { withHandlers } from 'recompose';
 import { GridLoader } from 'react-spinners';
-
+import ReactImageFallback from 'react-image-fallback';
 import CloseButton, { CloseIcon } from './CloseButton.js';
+import FallbackFaviconImage from './fallback-favicon.png';
 
 type Props = {
     title: string,
     tabId: string,
     isLoading: boolean,
+    faviconUrl: string,
     isActive: boolean,
     onTabClick: (tabId: string) => void,
     onTabCloseClick: (tabId: string) => void,
@@ -20,6 +22,8 @@ type Props = {
 
 const TabWrapper = styled.div`
     height: 30px;
+    user-select: none;
+    border-radius: 2px 2px 0px 0px;
     flex: 1;
     box-sizing: border-box;
     max-width: 175px;
@@ -65,7 +69,13 @@ const Tab = (props: Props) =>
             {props.isLoading
                 ? <GridLoader size={3} margin={1} loading={props.isLoading} />
                 : typeof props.faviconUrl === 'string' &&
-                  <FaviconImage height={'15px'} src={props.faviconUrl} />}
+                  <ReactImageFallback
+                      src={props.faviconUrl}
+                      fallbackImage={FallbackFaviconImage}
+                      height={'15px'}
+                      style={{ verticalAlign: 'sub' }}
+                      alt="This site's favicon."
+                  />}
         </FaviconWrapper>
         <Label>
             {props.title}
@@ -78,7 +88,8 @@ Tab.defaultProps = {
     isActive: false
 };
 export default withHandlers({
-    handleClick: props => () => props.onTabClick(props.tabId),
+    handleClick: props => () =>
+        !props.isActive && props.onTabClick(props.tabId),
     handleCloseClick: props => event => {
         // since it's a nested component we have to stop the close from propagating up
         event.stopPropagation();

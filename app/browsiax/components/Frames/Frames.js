@@ -4,7 +4,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Frame from './Frame.js';
 
-type Props = {
+export type Props = {
     tabs: Tab[],
     startWebviewLoad: (tabId: number) => void,
     finishWebviewLoad: (tabId: number) => void,

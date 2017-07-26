@@ -1,50 +1,37 @@
 // @flow
 import actionTypes from '../actions/action-types.js';
-import { getWebContents } from '../utils/web-contents-cache.js';
-import { getDefaultFaviconUrl } from '../utils/url-util.js';
 
 export type Tab = {
-    tabId: number,
-    isActive: boolean, // whether the tab is selected
-    favIconUrl: string,
-    title: string,
-    isLoading: boolean,
-    url: string
+    tabId?: number,
+    isActive?: boolean, // whether the tab is selected
+    favIconUrl?: string,
+    title?: string,
+    history?: string[],
+    historyActiveIndex?: number,
+    isLoading?: boolean,
+    url?: string,
+    canGoBack?: boolean,
+    canGoForward?: boolean
 };
 
 type TabsState = Tab[];
 
-type TabsActionPayload =
-    | {
-          requestingTabId: ?string,
-          createTabProperties: Tab
-      }
-    | { tabId: number };
-
 const makeDefaultTab = () => ({
     isActive: true,
-    favIconUrl: '',
+    faviconUrl: '',
     isLoading: false,
+    history: [],
+    historyActiveIndex: 0,
     title: 'New tab',
-    url: 'https://www.google.com'
+    url: 'https://www.google.com',
+    canGoForward: false,
+    canGoBack: false
 });
-
-// **** helpers
-const getTabState = (tabId: number, tabsArray: Tab[]) => {
-    const wc = getWebContents(tabId);
-    if (!wc) return tabsArray.find(t => t.tabId === tabId) || {};
-    const url = wc.getURL();
-    return {
-        title: wc.getTitle(),
-        url,
-        faviconUrl: getDefaultFaviconUrl(url)
-    };
-};
 
 const mutateTabInArray = (
     tabsArray: Tab[],
     tabId: number,
-    newProps: Tab | {} = {}
+    newProps: Tab = {}
 ) => tabsArray.map(t => (t.tabId === tabId ? { ...t, ...newProps } : t));
 
 // ****  handlers
@@ -97,17 +84,13 @@ export default function tabs(
             return mutateTabInArray(state, payload.tabId, { isLoading: true });
         case actionTypes.WEBVIEW_LOAD_FINISHED:
             return mutateTabInArray(state, payload.tabId, {
-                ...getTabState(payload.tabId, state),
+                ...payload.newTabData,
                 isLoading: false
             });
         case actionTypes.TAB_UPDATE_REQUESTED:
-            return payload.newTabData
-                ? mutateTabInArray(state, payload.tabId, payload.newTabData)
-                : mutateTabInArray(
-                      state,
-                      payload.tabId,
-                      getTabState(payload.tabId, state)
-                  );
+            return mutateTabInArray(state, payload.tabId, payload.newTabData);
+        case actionTypes.GO_BACK_REQUESTED:
+        case actionTypes.GO_FORWARD_REQUESTED:
         default:
             return state;
     }

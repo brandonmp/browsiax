@@ -15,16 +15,20 @@ type Props = {
 
 const TabsBarWrapper = styled.div`
     display: flex;
+    user-select: none;
     flex-flow: row-nowrap;
     justify-content: flex-start;
     align-items: center;
     min-height: 25px;
     background-color: #ddd;
     border-top: 1px solid #bbb;
+    padding-top: 1px;
+    padding-bottom: 2px;
 `;
 
 const NewFrameButton = styled.button`
     cursor: default;
+    user-select: none;
     display: inline-block;
     line-height: 25px;
     width: 25px;
