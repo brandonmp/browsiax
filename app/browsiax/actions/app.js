@@ -11,7 +11,7 @@ const normalizeUrl = function(url) {
     return url;
 };
 type CreateNewTabPayload = {
-    requestingTabId?: string,
+    requestingTabId?: number,
     createTabProperties?: Tab
 };
 

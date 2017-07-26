@@ -19,7 +19,13 @@ const getFullTabState = (tabId: number) => {
 };
 
 const addEventListeners = (webview: HTMLElement, props: Props) => {
-    const { startWebviewLoad, finishWebviewLoad, updateTab, tabId } = props;
+    const {
+        startWebviewLoad,
+        finishWebviewLoad,
+        createNewTab,
+        updateTab,
+        tabId
+    } = props;
 
     // these are mostly just to toggle loading spinner
     webview.addEventListener('did-start-loading', () => {
@@ -30,15 +36,6 @@ const addEventListeners = (webview: HTMLElement, props: Props) => {
         finishWebviewLoad(tabId);
     });
 
-    // this is the earliest event after navigation completes, so we'll want to
-    // update a bunch of stuff (url, favicon, title, etc.)
-    /* webview.addEventListener('did-get-response-details', event => {
-        if (event.resourceType === 'mainFrame') {
-            console.log('RESPONSE RECEIVED', event);
-            updateTab(tabId, getFullTabState(tabId));
-        }
-    }); */
-
     // favicons are so awkward to retrieve that electron has an event just for it
     webview.addEventListener('page-favicon-updated', e => {
         if (
@@ -48,6 +45,19 @@ const addEventListeners = (webview: HTMLElement, props: Props) => {
         ) {
             return updateTab(tabId, { favIconUrl: e.favicons[0] });
         }
+    });
+
+    // intercept popups into new tabs
+    webview.addEventListener('new-window', event => {
+        console.log('NEW WINDOW REQUESTED', event);
+        createNewTab({
+            requestingTabId: tabId,
+            createTabProperties: {
+                url: event.url,
+                isActive: false
+            }
+        });
+        finishWebviewLoad(tabId);
     });
 
     /*     webview.addEventListener('load-commit', event => {

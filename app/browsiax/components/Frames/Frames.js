@@ -4,11 +4,16 @@ import React from 'react';
 import styled from 'styled-components';
 import Frame from './Frame.js';
 
+type CreateNewTabPayload = {
+    requestingTabId: number,
+    createTabProperties: Tab
+};
 export type Props = {
     tabs: Tab[],
     startWebviewLoad: (tabId: number) => void,
     finishWebviewLoad: (tabId: number) => void,
-    updateTab: (tabId: number) => void
+    updateTab: (tabId: number) => void,
+    createNewTab: (payload: CreateNewTabPayload) => void
 };
 
 const Wrapper = styled.div`
@@ -23,6 +28,7 @@ const Frames = (props: Props) =>
                 key={t.tabId}
                 {...t}
                 currentUrl={t.url}
+                createNewTab={props.createNewTab}
                 startWebviewLoad={props.startWebviewLoad}
                 finishWebviewLoad={props.finishWebviewLoad}
                 updateTab={props.updateTab}

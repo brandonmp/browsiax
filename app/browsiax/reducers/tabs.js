@@ -16,7 +16,7 @@ export type Tab = {
 
 type TabsState = Tab[];
 
-const makeDefaultTab = () => ({
+const makeDefaultTab = (newTabProps = {}) => ({
     isActive: true,
     faviconUrl: '',
     isLoading: false,
@@ -25,7 +25,8 @@ const makeDefaultTab = () => ({
     title: 'New tab',
     url: 'https://www.google.com',
     canGoForward: false,
-    canGoBack: false
+    canGoBack: false,
+    ...newTabProps
 });
 
 const mutateTabInArray = (
@@ -54,6 +55,13 @@ const closeTab = (state, targetTabId) => {
     return tabsWithNewActive.filter(t => t.tabId !== targetTabId);
 };
 
+const spliceInNewTab = (state: Tab[], targetTabId, newTab) => {
+    const targetIndex = state.findIndex(t => t.tabId === targetTabId);
+    const firstHalf = state.slice(0, targetIndex + 1);
+    const secondHalf = state.slice(targetIndex + 1);
+    return [...firstHalf, newTab, ...secondHalf];
+};
+
 const defaultTabsState = [];
 export default function tabs(
     state: TabsState = defaultTabsState,
@@ -72,10 +80,16 @@ export default function tabs(
 ) {
     switch (type) {
         case actionTypes.NEW_TAB_REQUESTED:
-            return [
-                ...setActiveTab(state, null), // new tab will be active by default
-                { ...makeDefaultTab(), ...payload.createTabProperties }
-            ];
+            return payload.createTabProperties && payload.requestingTabId
+                ? spliceInNewTab(
+                      state,
+                      payload.requestingTabId,
+                      makeDefaultTab(payload.createTabProperties)
+                  )
+                : [
+                      ...setActiveTab(state, null), // new tab will be active by default
+                      makeDefaultTab(payload.createTabProperties)
+                  ];
         case actionTypes.SET_ACTIVE_TAB:
             return setActiveTab(state, payload.tabId);
         case actionTypes.CLOSE_TAB:
