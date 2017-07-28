@@ -30,6 +30,7 @@ export default {
     },
     loadURLRequested: (tabId: number, newUrl: string) => {
         const wc = getWebContents(tabId);
+        console.log('WEB CONTENTS', wc);
         if (wc) wc.loadURL(normalizeUrl(newUrl));
         return {
             type: actions.LOAD_URL_REQUESTED,

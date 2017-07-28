@@ -4,8 +4,10 @@ import React from 'react';
 import styled from 'styled-components';
 import AddressBar from './AddressBar.js';
 import { withProps, withHandlers, compose } from 'recompose';
+import 'font-awesome-webpack';
 
 type TabEventHandler = (tabId: number) => void;
+
 type Props = {
     loadURLRequested: (tabId: number, newUrl: string) => void,
     goForward: TabEventHandler,
@@ -20,6 +22,7 @@ type Props = {
     handleClickForward: TabEventHandler,
     handleClickReload: TabEventHandler
 };
+
 const NavigationControlsWrapper = styled.div`
     display: flex;
     background-color: #ededee;

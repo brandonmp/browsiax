@@ -55,6 +55,7 @@ const TabsBar = (props: Props) =>
     <TabsBarWrapper>
         {props.tabs.map(t =>
             <Tab
+                isAllAlone={props.tabs.length === 1}
                 key={t.tabId}
                 onTabCloseClick={props.closeTab}
                 onTabClick={props.setActiveTab}

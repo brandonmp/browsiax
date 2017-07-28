@@ -102,6 +102,7 @@ export default function tabs(
                 isLoading: false
             });
         case actionTypes.TAB_UPDATE_REQUESTED:
+        case actionTypes.TAB_NAVIGATION_COMPLETE:
             return mutateTabInArray(state, payload.tabId, payload.newTabData);
         case actionTypes.GO_BACK_REQUESTED:
         case actionTypes.GO_FORWARD_REQUESTED:

@@ -4,7 +4,8 @@ import styled from 'styled-components';
 import Icon from './x-icon.png';
 
 type Props = {
-    handleCloseClick: () => void
+    handleCloseClick: () => void,
+    isHidden: boolean
 };
 
 // we want to set this to opaque when the parent is hovered
@@ -14,6 +15,7 @@ type Props = {
 export const CloseIcon = styled.div`
     height: 65%;
     max-height: 20px;
+    visibility: ${props => (props.isHidden ? 'hidden' : 'visible')};
     // becomes opaque via the &:hover css of the Tab parent
     opacity: 0;
     border-radius: 4px;
@@ -25,7 +27,7 @@ export const CloseIcon = styled.div`
 `;
 
 const CloseButton = (props: Props) =>
-    <CloseIcon onClick={props.handleCloseClick}>
+    <CloseIcon isHidden={props.isHidden} onClick={props.handleCloseClick}>
         <img
             alt={'A tab close icon. Click to close this tab.'}
             height={'12px'}

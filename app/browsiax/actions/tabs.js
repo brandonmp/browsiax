@@ -31,6 +31,10 @@ export default {
         type: actionTypes.WEBVIEW_LOAD_FINISHED,
         payload: { tabId }
     }),
+    reportTabNavigationComplete: (tabId: number, newTabData: Object) => ({
+        type: actionTypes.TAB_NAVIGATION_COMPLETE,
+        payload: { tabId, newTabData }
+    }),
     updateTab: (tabId: number, newTabData: Object) => ({
         type: actionTypes.TAB_UPDATE_REQUESTED,
         payload: { tabId, newTabData }

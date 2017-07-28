@@ -118,7 +118,6 @@ class Frame extends React.Component<DefaultProps, Props, State> {
                     // hooks to undocumented event
                     // https://github.com/electron/electron/issues/10042
                     onDidAttach={this.handleDidAttach}
-                    autosize
                     ref={e => {
                         this.webview = e;
                     }}

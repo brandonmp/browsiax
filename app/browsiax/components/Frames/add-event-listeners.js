@@ -24,6 +24,7 @@ const addEventListeners = (webview: HTMLElement, props: Props) => {
         startWebviewLoad,
         finishWebviewLoad,
         createNewTab,
+        reportTabNavigationComplete,
         updateTab,
         tabId
     } = props;
@@ -49,6 +50,7 @@ const addEventListeners = (webview: HTMLElement, props: Props) => {
             wc.executeJavaScript(errorPageRenderer);
         }
     );
+
     // favicons are so awkward to retrieve that electron has an event just for it
     webview.addEventListener('page-favicon-updated', e => {
         if (
@@ -84,12 +86,16 @@ const addEventListeners = (webview: HTMLElement, props: Props) => {
         return updateTab(tabId, { title: event.title });
     });
 
-    webview.addEventListener('did-navigate', () => {
+    webview.addEventListener('did-navigate', e => {
+        console.log('NAV', e);
         const newHistoryState = getFullTabState(tabId);
-        updateTab(tabId, newHistoryState);
+        reportTabNavigationComplete(tabId, newHistoryState);
     });
-    webview.addEventListener('did-navigate-in-page', () => {
-        updateTab(tabId, getFullTabState(tabId));
+    webview.addEventListener('did-navigate-in-page', e => {
+        if (e.isMainFrame === true) {
+            console.log('NAV IN PAGE', e);
+            reportTabNavigationComplete(tabId, getFullTabState(tabId));
+        }
     });
 };
 

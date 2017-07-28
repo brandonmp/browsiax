@@ -58,7 +58,6 @@ const Label = styled.div`
     white-space: nowrap;
 `;
 
-const FaviconImage = styled.img`vertical-align: sub;`;
 const Tab = (props: Props) =>
     <TabWrapper
         isLoading={props.isLoading}
@@ -80,7 +79,12 @@ const Tab = (props: Props) =>
         <Label>
             {props.title}
         </Label>
-        <CloseButton handleCloseClick={props.handleCloseClick} />
+
+        <CloseButton
+            // don't let user close only tab
+            isHidden={props.isAllAlone}
+            handleCloseClick={props.handleCloseClick}
+        />
     </TabWrapper>;
 
 Tab.defaultProps = {

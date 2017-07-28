@@ -3,7 +3,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
 import Routes from '../routes';
-import Browsiax from '../browsiax';
+import Browsiax from '../browsiax/main';
 
 type RootType = {
     store: {},

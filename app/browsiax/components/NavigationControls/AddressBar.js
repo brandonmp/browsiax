@@ -29,11 +29,13 @@ class AddressBar extends React.Component {
     getValue() {
         if (this.urlInput) return this.urlInput.value;
     }
-    setValue(newUrl) {
+    setValue = newUrl => {
         if (this.urlInput && this.urlInput.value !== newUrl)
             this.urlInput.value = newUrl;
-    }
-
+    };
+    handleFocus = () => {
+        if (this.urlInput && this.urlInput.select) this.urlInput.select();
+    };
     restoreValue() {
         this.setValue(this.props.displayUrl);
     }
@@ -69,6 +71,13 @@ class AddressBar extends React.Component {
                             this.props.activeTab.tabId,
                             location
                         );
+                    } else {
+                        this.props.loadURLRequested(
+                            this.props.activeTab.tabId,
+                            `https://www.google.com/search?q=${encodeURIComponent(
+                                location
+                            )}`
+                        );
                     }
                 }
                 break;
@@ -78,6 +87,7 @@ class AddressBar extends React.Component {
     render() {
         return (
             <FullWidthInput
+                onFocus={this.handleFocus}
                 onKeyDown={this.onKeyDown}
                 innerRef={e => {
                     this.urlInput = e;
