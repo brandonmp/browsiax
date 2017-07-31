@@ -19,6 +19,11 @@ const getFullTabState = (tabId: number) => {
     };
 };
 
+const fireWhenDOMReady = (tabId, readyFunction: (event: Event) => any) => {
+    const wc = getWebContents(tabId);
+    wc.once('dom-ready', readyFunction);
+};
+
 const addEventListeners = (webview: HTMLElement, props: Props) => {
     const {
         startWebviewLoad,
@@ -26,6 +31,7 @@ const addEventListeners = (webview: HTMLElement, props: Props) => {
         createNewTab,
         reportTabNavigationComplete,
         updateTab,
+        reportTabDOMReady,
         tabId
     } = props;
 
@@ -90,6 +96,9 @@ const addEventListeners = (webview: HTMLElement, props: Props) => {
         console.log('NAV', e);
         const newHistoryState = getFullTabState(tabId);
         reportTabNavigationComplete(tabId, newHistoryState);
+        fireWhenDOMReady(tabId, () =>
+            reportTabDOMReady(tabId, { url: getWebContents(tabId).getURL() })
+        );
     });
     webview.addEventListener('did-navigate-in-page', e => {
         if (e.isMainFrame === true) {

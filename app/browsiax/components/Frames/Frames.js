@@ -11,12 +11,14 @@ type CreateNewTabPayload =
       }
     | {};
 export type Props = {
+    defaultUrl?: string,
     tabs: Tab[],
     startWebviewLoad: (tabId: number) => void,
     finishWebviewLoad: (tabId: number) => void,
     updateTab: (tabId: number) => void,
-    reportTabNavigationComplete: (tabId: number, newTabData: Object) => void,
-    createNewTab: (payload: CreateNewTabPayload) => void
+    reportTabNavigationComplete: (tabId: number, newTabData: Tab) => void,
+    createNewTab: (payload: CreateNewTabPayload) => void,
+    reportTabDOMReady: (tabId: number) => void
 };
 
 const Wrapper = styled.div`
@@ -26,16 +28,21 @@ const Wrapper = styled.div`
 `;
 class Frames extends React.Component {
     props: Props;
-    maybeCreateTab = () => {
-        if (!this.props.tabs || this.props.tabs.length === 0)
-            this.props.createNewTab({});
+    static defaultProps = {
+        defaultUrl: 'https://www.google.com'
     };
-    componentDidUpdate() {
-        this.maybeCreateTab();
-    }
     componentDidMount() {
         this.maybeCreateTab();
     }
+    componentDidUpdate() {
+        this.maybeCreateTab();
+    }
+    maybeCreateTab = () => {
+        if (!this.props.tabs || this.props.tabs.length === 0)
+            this.props.createNewTab({
+                createTabProperties: { url: this.props.defaultUrl }
+            });
+    };
     render() {
         return (
             <Wrapper>
@@ -47,6 +54,7 @@ class Frames extends React.Component {
                         reportTabNavigationComplete={
                             this.props.reportTabNavigationComplete
                         }
+                        reportTabDOMReady={this.props.reportTabDOMReady}
                         createNewTab={this.props.createNewTab}
                         startWebviewLoad={this.props.startWebviewLoad}
                         finishWebviewLoad={this.props.finishWebviewLoad}

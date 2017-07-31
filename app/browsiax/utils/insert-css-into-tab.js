@@ -1,16 +1,12 @@
 // @flow
 import { getWebContents } from './web-contents-cache.js';
 
-const runCodeInTab = async (
-    tabId: number,
-    code: string,
-    userGesture: boolean = false
-) => {
+const insertCSSIntoTab = async (tabId: number, css: string) => {
     const wc = getWebContents(tabId);
     if (!wc) {
         throw new Error(`Failed to retrieve web contents of tab ID ${tabId}`);
     }
-    return wc.executeJavaScript(code, userGesture);
+    return wc.insertCSS(css);
 };
 
-export default runCodeInTab;
+export default insertCSSIntoTab;

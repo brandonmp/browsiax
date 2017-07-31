@@ -11,7 +11,8 @@ export type Tab = {
     isLoading?: boolean,
     url?: string,
     canGoBack?: boolean,
-    canGoForward?: boolean
+    canGoForward?: boolean,
+    isDOMReady?: boolean
 };
 
 type TabsState = Tab[];
@@ -26,6 +27,7 @@ const makeDefaultTab = (newTabProps = {}) => ({
     url: 'https://www.google.com',
     canGoForward: false,
     canGoBack: false,
+    isDOMReady: false,
     ...newTabProps
 });
 
@@ -104,8 +106,8 @@ export default function tabs(
         case actionTypes.TAB_UPDATE_REQUESTED:
         case actionTypes.TAB_NAVIGATION_COMPLETE:
             return mutateTabInArray(state, payload.tabId, payload.newTabData);
-        case actionTypes.GO_BACK_REQUESTED:
-        case actionTypes.GO_FORWARD_REQUESTED:
+        case actionTypes.TAB_DOM_READY:
+            return mutateTabInArray(state, payload.tabId, { isDOMReady: true });
         default:
             return state;
     }

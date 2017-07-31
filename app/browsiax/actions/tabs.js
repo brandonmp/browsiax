@@ -35,6 +35,10 @@ export default {
         type: actionTypes.TAB_NAVIGATION_COMPLETE,
         payload: { tabId, newTabData }
     }),
+    reportTabDOMReady: (tabId: number, tabDetails: Tab) => ({
+        type: actionTypes.TAB_DOM_READY,
+        payload: { tabId, tabDetails }
+    }),
     updateTab: (tabId: number, newTabData: Object) => ({
         type: actionTypes.TAB_UPDATE_REQUESTED,
         payload: { tabId, newTabData }

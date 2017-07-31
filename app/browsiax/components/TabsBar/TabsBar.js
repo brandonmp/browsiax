@@ -22,7 +22,7 @@ const TabsBarWrapper = styled.div`
     min-height: 25px;
     background-color: #ddd;
     border-top: 1px solid #bbb;
-    padding-top: 1px;
+    padding-top: 2px;
     padding-bottom: 2px;
 `;
 

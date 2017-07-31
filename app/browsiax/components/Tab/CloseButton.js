@@ -13,8 +13,6 @@ type Props = {
 // the styled-component into the parent's style
 // https://stackoverflow.com/questions/41007060/best-way-to-handle-hover-in-styled-components-with-react
 export const CloseIcon = styled.div`
-    height: 65%;
-    max-height: 20px;
     visibility: ${props => (props.isHidden ? 'hidden' : 'visible')};
     // becomes opaque via the &:hover css of the Tab parent
     opacity: 0;
