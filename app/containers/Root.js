@@ -3,7 +3,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
 import Routes from '../routes';
-import { FullBrowser } from '../browsiax/dist/bundle.js';
+import FullBrowser from '../browsiax/main.js';
 
 type RootType = {
     store: {},

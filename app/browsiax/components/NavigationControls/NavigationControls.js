@@ -4,7 +4,7 @@ import React from 'react';
 import styled from 'styled-components';
 import AddressBar from './AddressBar.js';
 import { withProps, withHandlers, compose } from 'recompose';
-import 'font-awesome-webpack';
+import Icons from './icons';
 
 type TabEventHandler = (tabId: number) => void;
 
@@ -46,7 +46,7 @@ const UrlBar = styled.div`
     }
 `;
 const NavButton = styled.button`
-    opacity: ${props => (props.disabled ? '0.3' : '0.85')};
+    opacity: ${props => (props.disabled ? '0.2' : '0.6')};
     -webkit-app-region: no-drag;
     user-select: none;
     background-color: rgba(0, 0, 0, 0);
@@ -68,26 +68,31 @@ const NavButton = styled.button`
     }
 `;
 
+const NavIcon = styled.img`
+    vertical-align: middle;
+    height: 20px;
+`;
+
 const NavigationControls = (props: Props) =>
     <NavigationControlsWrapper>
         <NavButton
             onClick={props.handleClickBack}
             disabled={!props.activeTab.canGoBack}
         >
-            <i className="fa fa-arrow-left fa-2x" />
+            <NavIcon alt="The back button icon" src={Icons.LeftArrow} />
         </NavButton>
         <NavButton
             onClick={props.handleClickForward}
             disabled={!props.activeTab.canGoForward}
         >
-            <i className="fa fa-arrow-right fa-2x" />
+            <NavIcon alt="The forward button icon" src={Icons.RightArrow} />
         </NavButton>
         {props.activeTab.isLoading
             ? <NavButton onClick={props.handleClickStop}>
-                  <i className="fa fa-times-circle-o fa-2x" />
+                  <NavIcon alt="The stop button icon" src={Icons.Stop} />
               </NavButton>
             : <NavButton onClick={props.handleClickReload}>
-                  <i className="fa fa-refresh  fa-2x" />
+                  <NavIcon alt="The reload button icon" src={Icons.Refresh} />
               </NavButton>}
         <UrlBar>
             <AddressBar

@@ -4,7 +4,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { withHandlers, compose, defaultProps } from 'recompose';
 import Tab from '../Tab';
-import AddNewFrameIcon from './add-new-frame-icon.png';
+import AddNewFrameIcon from './add.svg';
 
 type Props = {
     tabs: TabType[],
@@ -39,6 +39,7 @@ const NewFrameButton = styled.button`
     margin: 0 3px;
     text-align: center;
     transition: 0.1s opacity;
+    vertical-align: sub; // centers it on the tab
     user-select: none;
     background: none;
     outline: none;
