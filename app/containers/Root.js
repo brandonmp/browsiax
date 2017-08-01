@@ -3,7 +3,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
 import Routes from '../routes';
-import Browsiax from '../browsiax/main';
+import { FullBrowser } from '../browsiax/dist/bundle.js';
 
 type RootType = {
     store: {},
@@ -11,10 +11,11 @@ type RootType = {
 };
 
 export default function Root({ store, history }: RootType) {
+    console.log('BROWSIAX', FullBrowser);
     return (
         <Provider store={store}>
             <div style={{ height: '100%', width: '100%' }}>
-                <Browsiax />
+                <FullBrowser />
             </div>
         </Provider>
     );

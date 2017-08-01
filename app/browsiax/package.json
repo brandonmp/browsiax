@@ -1,25 +1,32 @@
 {
-  "name": "browsiax",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "electron-context-menu": "^0.9.1",
-    "font-awesome-webpack": "^0.0.5-beta.2",
-    "less": "^2.7.2",
-    "lodash": "^4.17.4",
-    "lru-cache": "^4.1.1",
-    "react": "^15.6.1",
-    "react-electron-web-view": "^2.0.1",
-    "react-image-fallback": "^6.0.2",
-    "react-redux": "^5.0.5",
-    "react-spinners": "^0.0.28",
-    "recompose": "^0.24.0",
-    "styled-components": "^2.1.1"
-  }
+    "name": "browsiax",
+    "version": "1.0.3",
+    "description": "browsiax",
+    "main": "./dist/bundle.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "rm -rf ./dist && NODE_ENV=production node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.js --colors",
+        "publish:patch": "npm run build && npm version patch && npm publish"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "electron-context-menu": "^0.9.1",
+        "font-awesome-webpack": "^0.0.5-beta.2",
+        "less": "^2.7.2",
+        "lodash": "^4.17.4",
+        "lru-cache": "^4.1.1",
+        "react": "^15.6.1",
+        "react-electron-web-view": "^2.0.1",
+        "react-image-fallback": "^6.0.2",
+        "react-redux": "^5.0.5",
+        "react-spinners": "^0.0.28",
+        "recompose": "^0.24.0",
+        "styled-components": "^2.1.1"
+    },
+    "devDependencies": {
+        "babel-cli": "^6.24.1",
+        "babel-register": "^6.24.1",
+        "webpack": "^3.4.1"
+    }
 }
