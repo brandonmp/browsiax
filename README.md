@@ -1,3 +1,27 @@
+
+Browsiax itself is a (relatively) self-contained React component, meant for drop-in to a React project (in electron). 
+
+This repo contains a dev environment w/ Browsiax in `app/browsiax`. the reducers & action creators are also exported from `app/browsiax` & are required for integration into a project.
+
+
+
+to run:
+
+```
+git clone https://gitlab.com/wayhome/browsiax.git
+or
+git clone git@gitlab.com:wayhome/browsiax.git
+
+cd browsiax
+yarn
+npm run dev
+```
+
+# original boilerplate: 
+
+
+
+
 # electron-react-boilerplate
 
 ### A Boilerplate for Scalable Cross-Platform Desktop Apps
