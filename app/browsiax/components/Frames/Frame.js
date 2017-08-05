@@ -47,16 +47,30 @@ type State = {
     // we can't just straight set the url by props b/c that forces it to reload the
     // webview every time an action updates the tab URL in state. in the case of
     // navigations that originate in the webview, this means a double-load
-    startingUrl: string
+    startingUrl: string,
+    hasBeenMounted: boolean
 };
 
 const Wrapper = styled.div`
+    position: absolute;
     height: 100%;
     width: 100%;
-    position: absolute;
-    // electron docs recommend setting size to 0px x 0px  but visibility is what brave does
-    visibility: ${props => (props.isActive ? 'visible' : 'hidden')};
+    // if visibility is 'hidden' when webview mounts, page will not load on macos.
+    // so we use z-index as primary means of shuffling which tab is active, and
+    // set visibility: hidden on non-active tabs as a means of throttling background tabs' processes
+    // https://github.com/electron/electron/issues/8505
+    z-index: ${props => (props.isActive ? 1 : 0)};
+    visibility: ${props =>
+        !props.hasBeenMounted || (props.hasBeenMounted && props.isActive)
+            ? 'visible'
+            : 'hidden'};
 `;
+/*
+//height: 100%;
+    //width: 100%;
+    // electron docs recommend setting size to 0px x 0px  but visibility is what brave does
+    //visibility: ${props => (props.isActive ? 'visible' : 'hidden')};
+     */
 class Frame extends React.Component<DefaultProps, Props, State> {
     state: State;
     webview: HTMLElement;
@@ -69,7 +83,8 @@ class Frame extends React.Component<DefaultProps, Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            startingUrl: this.props.currentUrl
+            startingUrl: this.props.currentUrl,
+            hasBeenMounted: false
         };
         this.webview = null;
     }
@@ -81,6 +96,10 @@ class Frame extends React.Component<DefaultProps, Props, State> {
     handleDidAttach = ({ target }: Event) => {
         this.restoreTabHistory(target);
         this.cacheWebContents(target);
+        target.addEventListener('did-finish-load', () => {
+            console.log('TAB READY', this.state);
+            this.setState({ hasBeenMounted: true });
+        });
         addEventListeners(target, this.props);
         makeContextMenu({ window: target });
     };
@@ -106,7 +125,10 @@ class Frame extends React.Component<DefaultProps, Props, State> {
     webview: ?HTMLElement = null;
     render() {
         return (
-            <Wrapper isActive={this.props.isActive}>
+            <Wrapper
+                hasBeenMounted={this.state.hasBeenMounted}
+                isActive={this.props.isActive}
+            >
                 {/*  webview doesn't seem to fill container w/o flex prop, so assign to actual webview element */}
                 <style>{`
                     .react-webview {
