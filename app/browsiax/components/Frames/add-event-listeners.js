@@ -3,6 +3,7 @@ import type { Props } from './Frame.js';
 import { getWebContents } from '../../utils/web-contents-cache.js';
 import { getDefaultFaviconUrl } from '../../utils/url-util.js';
 import renderErrorPage from './render-error-page.js';
+import networkErrorCodes from './chrome-network-error-codes.js';
 
 const getFullTabState = (tabId: number) => {
     const wc = getWebContents(tabId);
@@ -48,10 +49,17 @@ const addEventListeners = (webview: HTMLElement, props: Props) => {
         'did-fail-load',
         // $FlowFixMe
         ({ errorCode, errorDescription }) => {
+            // the errs don't always include descriptions so we'll add our own
+            const errorType = networkErrorCodes[String(errorCode)]
+            console.warn("PAGPAGE LOAD ERR", errorCode, errorType, tabId);
+            // -3 (aborted) isn't really an error the user needs to know about,
+            // and it appears to happen quite often during ordinary (and ostensibly successful)
+            //  page load events, so we'll suppress it
+            if (errorCode === -3) return
             const wc = getWebContents(tabId);
             const errorPageRenderer = renderErrorPage(
                 errorCode,
-                errorDescription
+                errorType
             ).toString();
             wc.executeJavaScript(errorPageRenderer);
         }
